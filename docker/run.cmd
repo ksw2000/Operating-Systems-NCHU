@@ -3,8 +3,8 @@
 
 @echo off
 IF "%~1" == "" GOTO NoName
-echo run myubuntu...
-docker run -v %cd%/../Lab:/Lab -v %cd%/../HW:/HW --name %1 -it myubuntu
+echo run oslab...
+docker run -v %cd%/../Lab:/Lab -v %cd%/../HW:/HW --name %1 -it oslab
 
 :NoName
-docker run -v %cd%/../Lab:/Lab -v %cd%/../HW:/HW -it myubuntu
+docker run -v %cd%/../Lab:/Lab -v %cd%/../HW:/HW -it oslab
