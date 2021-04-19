@@ -6,6 +6,8 @@
       + HW1/
       + HW2/
     + Lab/ :microscope:
+      + Lab3/
+      + Lab6/
     + Note/ :notebook:
     + build.cmd
     + Dockerfile :whale:
@@ -14,22 +16,9 @@
 
 ## Quick start on docker :whale: under windows
 
-**build image**
+---
 
 ```sh
-> build.cmd
-```
-
-**create container**
-
-```sh
-> run.cmd myoslab
-```
-
-*the first argument is container name*
-
-**start**
-
-```sh
-$ cd Lab
+build.cmd        # build image
+run.cmd myoslab  # create container
 ```
