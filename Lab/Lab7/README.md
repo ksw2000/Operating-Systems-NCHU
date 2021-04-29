@@ -8,7 +8,7 @@ Inter-process communication (IPC) practice
 2. When sender send `exit`, close message queue.
 
 **compile**
-```c
+```sh
 gcc sender.c -o sender -lrt
 gcc receiver.c -o receiver -lrt
 ```
@@ -20,7 +20,7 @@ gcc receiver.c -o receiver -lrt
 3. Secondly, execute a consumer, and it will show the text you typed at producer.
 
 **compile**
-```c
+```sh
 gcc producer.c -o producer -lrt
 gcc consumer.c -o consumer -lrt
 ```
