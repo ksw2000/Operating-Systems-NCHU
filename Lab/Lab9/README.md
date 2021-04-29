@@ -10,7 +10,7 @@ Each thread increments the same global variable 250,000 times.
 
 >
 > Do not need to use join() in this example
-> This program can encounter `race condition`!
+> The main thread may finish before children's threads
 >
 
 **compile**
