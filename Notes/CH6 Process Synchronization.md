@@ -189,12 +189,12 @@ do{
 | Thread1                             | Thread2                             |
 | ----------------------------------- | ----------------------------------- |
 | temp = *value = 0 // *value is lock |                                     |
-| while() 不成立                      |                                     |
+| while() 不成立                         |                                     |
 | CS, but soon context switch         |                                     |
 |                                     | temp = *value = 1 // *value is lock |
-|                                     | while() 成立                        |
+|                                     | while() 成立                          |
 |                                     | temp = *value = 1 // *value is lock |
-| CS                                  | while() 成立                        |
+| CS                                  | while() 成立                          |
 | ...                                 | ...                                 |
 
 ### Bounded-waiting
@@ -205,13 +205,13 @@ Previous two versions (`test and set` and `compare and swap`) only guarantees **
 
 ```c
 do{
-    waiting[i] = TRUE;							// ith P wish to enter CS
-    while(waiting[i] && test_and_set(&lock));	// if waiting[i] = false || lock = false
-    waiting[i] = FALSE;							// ith P enters CS
+    waiting[i] = TRUE;                           // ith P wish to enter CS
+    while(waiting[i] && test_and_set(&lock));    // if waiting[i] = false || lock = false
+    waiting[i] = FALSE;                          // ith P enters CS
 
     // CRITICAL SECTION
 
-    j = (i+1)%n;						  // scanf from i+1, i+2, ... i-1
+    j = (i+1)%n;                          // scanf from i+1, i+2, ... i-1
     while(j!=i && waiting[j] == FALSE)    // scan wait[j]
         j = (j+1)%n;
 
@@ -258,7 +258,6 @@ But, atomic variables do not entirely solve CS problems in all circumstances
 > example1: what if we want to execute an arbitrary region of code without interference? e.g., red-black tree
 > 
 > example2: in the bounded-buffer problem. Assume one producer and two consumers, and buffer was empty. We use atomic integer for count and consider it's OK! When the producer entered an item in the buffer `count` was successfully set to 1. But both consumer could exit their while loop (as `count` would no longer be equal to 0) and proceed to consume the item => race condition is also occurred. (兩個顧客偵測到buffer為 1 時同時做拿取)
-> 
 
 ## Operation System Solution
 
@@ -276,23 +275,23 @@ Mutex (mutual exclusion) lock is a synchronization tool provided by the OS
   
   > ```c
   > acquire(){
-  >        while(mutex == FALSE);	// busy wait
+  >        while(mutex == FALSE);    // busy wait
   >        mutex = FALSE;
   > }
   > 
   > release(){
-  >    	mutex = TRUE;
+  >        mutex = TRUE;
   > }
   > 
   > /*
-  > 	These two functions must be implemented atomically.
-  > 	Both test-and-set and compare-and-swap can
-  > 	be used to implement these functions.
+  >     These two functions must be implemented atomically.
+  >     Both test-and-set and compare-and-swap can
+  >     be used to implement these functions.
   > */
   > ```
-  
-+ Race condition problem solved by mutex
 
++ Race condition problem solved by mutex
+  
   > ```c
   > acquire(mutex);
   > // CRITICAL SECTION
@@ -303,11 +302,11 @@ Mutex (mutual exclusion) lock is a synchronization tool provided by the OS
 ---
 
 > **Spin Locks**
->
+> 
 > previous mutex implementation needs **busy waiting**, this kind of lock is called a spinlock
->
+> 
 > busy waiting: 一直去檢查
->
+> 
 > spinlock is only useful in multi-processor systems
 
 ---
@@ -325,10 +324,11 @@ Mutex (mutual exclusion) lock is a synchronization tool provided by the OS
    > + Semaphore value is initialized to N
 
 2. Binary semaphore
-
+   
    > + integer value can range only between 0 and 1
-   >
+   > 
    > + similar to mutex
+   > 
    > + Binary semaphore is initialized to 1 
 
 **implementation without busy waiting**
@@ -341,8 +341,8 @@ Mutex (mutual exclusion) lock is a synchronization tool provided by the OS
   
   ```c
   typedef struct{
-  	int value;
-  	struct procss *L; // PCB
+      int value;
+      struct procss *L; // PCB
   }semaphore;
   ```
 
@@ -439,19 +439,17 @@ A set of properties that a system must satisfy to ensure **processes make progre
 for(;;){
     // copy a shared variable (m_Head) to a local variable (oldHead)
     oldHead = m_Head;
-    
+
     // Do the modification locally via newHead, thus, not yet visible to other threads
     newHead = m_Head;
     newHead->next = oldHead;
-    
+
     // Next, attempt to publish our changes to the shared variable.
     // If the shared variable hasn't changed, the compare-and-swap succeed and we return
     // Otherwise, repeat
     if(compare_and_swap(&m_Head, oldHead, newHead) == oldHead) return;
 }
 ```
-
-
 
 1. **Atomic variables** are much lighter than mutex or semaphores for single updates to shared simple variables, e.g. integers
 
