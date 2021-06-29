@@ -1,5 +1,4 @@
 FROM ubuntu
-MAINTAINER liao2000
 VOLUME ["/Lab", "/HW"]
 
 RUN cd ~
