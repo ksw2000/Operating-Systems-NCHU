@@ -1,4 +1,4 @@
-# Lab9 Thread Local Storage & Thread Cancellation Points
+# Lab10 Thread Local Storage & Thread Cancellation Points
 
 ## How to create thread-local variable
 
