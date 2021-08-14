@@ -1,4 +1,4 @@
-# Semaphores
+# Lab12 Semaphores
 
 POSIX Semaphores allow processes and thread to synchronize access to shared resources.
 
