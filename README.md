@@ -30,19 +30,21 @@
       + Lab12/ *semaphores*
       + Lab13/ *mutex*
     + Note/ :notebook:
-      + CH1-3 Instruction, OS structure, Process
-      + CH4-5 Thread & Concurrency, CPU Scheduling
-      + CH6 Process synchonization
-      + CH7 Synchronization examples
-      + CH9 Memory management
-      + CH11 Mass storage
-      + CH12 IO systems
-      + CH13 File system interface
-      + CH14-1 Very simple file system
-      + CH14-3 File system implementation
-      + CH14-4 Crash consistency FSCK and Journaling
-    
+      + [CH1-3 Instruction, OS structure, Process](https://github.com/liao2000/Operating-Systems-NCHU/blob/main/Notes/CH1-3.md)
+      + [CH4-5 Thread & Concurrency, CPU Scheduling](https://github.com/liao2000/Operating-Systems-NCHU/blob/main/Notes/CH4-5.md)
+      + [CH6 Process synchronization](https://github.com/liao2000/Operating-Systems-NCHU/blob/main/Notes/Chapter%206%20Process%20synchronization.md)
+      + [CH7 Synchronization examples](https://github.com/liao2000/Operating-Systems-NCHU/blob/main/Notes/Chapter%207%20Synchronization%20examples.md)
+      + [CH8 Deadlock](https://github.com/liao2000/Operating-Systems-NCHU/blob/main/Notes/Chapter%208%20Deadlock.md)
+      + [CH9 Memory management](https://github.com/liao2000/Operating-Systems-NCHU/blob/main/Notes/Chapter%209%20Memory%20management.md)
+      + [CH11 Mass storage](https://github.com/liao2000/Operating-Systems-NCHU/blob/main/Notes/Chapter%2011%20Mass%20storage.md)
+      + [CH12 IO systems](https://github.com/liao2000/Operating-Systems-NCHU/blob/main/Notes/Chapter%2012%20IO%20systems.md)
+      + [CH13 File system interface](https://github.com/liao2000/Operating-Systems-NCHU/blob/main/Notes/Chapter%2013%20File%20system%20interface.md)
+      + [CH14-1 Very simple file system](https://github.com/liao2000/Operating-Systems-NCHU/blob/main/Notes/Chapter%2014-1%20Very%20simple%20file%20system.md)
+      + [CH14-3 File system implementation](https://github.com/liao2000/Operating-Systems-NCHU/blob/main/Notes/Chapter%2014-3%20File%20system%20implementation.md)
+      + [CH14-4 Crash consistency FSCK and Journaling](https://github.com/liao2000/Operating-Systems-NCHU/blob/main/Notes/Chapter%2014-4%20Crash%20consistency%20FSCK%20and%20Journaling.md)
+      + [CH14-5 Chapter 14-5 Log-structure file system](https://github.com/liao2000/Operating-Systems-NCHU/blob/main/Notes/Chapter%2014-5%20Log-structure%20file%20system.md)
     + README.md :book:
+    + [2021檔案輸出入期末考.pdf]()
 
 ## Quick start on docker :whale: under windows
 
