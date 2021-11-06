@@ -20,15 +20,6 @@
         + [HW3/](https://github.com/liao2000/Operating-Systems-NCHU/tree/main/HW/2021/HW3) *list files*
         + [HW4/](https://github.com/liao2000/Operating-Systems-NCHU/tree/main/HW/2021/HW4) *ioctl*
     + [Lab/](https://github.com/liao2000/Operating-Systems-NCHU/tree/main/Lab) :microscope:
-      + [Lab3/](https://github.com/liao2000/Operating-Systems-NCHU/tree/main/Lab/Lab3) *setUid practice*
-      + [Lab6/](https://github.com/liao2000/Operating-Systems-NCHU/tree/main/Lab/Lab6) *process control practice*
-      + [Lab7/](https://github.com/liao2000/Operating-Systems-NCHU/tree/main/Lab/Lab7) *IPC `msg queue` and `shared mem` practice*
-      + [Lab8/](https://github.com/liao2000/Operating-Systems-NCHU/tree/main/Lab/Lab8) *IPC socket `UDP` practice*
-      + [Lab9/](https://github.com/liao2000/Operating-Systems-NCHU/tree/main/Lab/Lab9) *Thread management pthread & java thread*
-      + [Lab10/](https://github.com/liao2000/Operating-Systems-NCHU/tree/main/Lab/Lab10) *Thread local storage & thread cancellation points*
-      + [Lab11/](https://github.com/liao2000/Operating-Systems-NCHU/tree/main/Lab/Lab11) *signals*
-      + [Lab12/](https://github.com/liao2000/Operating-Systems-NCHU/tree/main/Lab/Lab12) *semaphores*
-      + Lab13/ *mutex*
     + [Notes/](https://github.com/liao2000/Operating-Systems-NCHU/tree/main/Notes) :notebook:
       + [CH1-3 Instruction, OS structure, Process](https://github.com/liao2000/Operating-Systems-NCHU/blob/main/Notes/CH1-3.md)
       + [CH4-5 Thread & Concurrency, CPU Scheduling](https://github.com/liao2000/Operating-Systems-NCHU/blob/main/Notes/CH4-5.md)
@@ -45,12 +36,3 @@
       + [CH14-5 Chapter 14-5 Log-structure file system](https://github.com/liao2000/Operating-Systems-NCHU/blob/main/Notes/Chapter%2014-5%20Log-structure%20file%20system.md)
     + [README.md](https://github.com/liao2000/Operating-Systems-NCHU/blob/main/README.md) :book:
     + [2021檔案輸出入期末考.pdf](https://github.com/liao2000/Operating-Systems-NCHU/blob/main/2021%E6%AA%94%E6%A1%88%E8%BC%B8%E5%87%BA%E5%85%A5%E6%9C%9F%E6%9C%AB%E8%80%83.pdf)
-
-## Quick start on docker :whale: under windows
-
----
-
-```sh
-build.cmd        # build image
-run.cmd myoslab  # create container
-```
