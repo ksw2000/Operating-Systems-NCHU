@@ -2,10 +2,12 @@
     + HackMD-backup/
         + [CH1-3 Instruction, OS structure, Process](https://github.com/liao2000/Operating-Systems-NCHU/blob/main/Notes/CH1-3.md)
         + [CH4-5 Thread & Concurrency, CPU Scheduling](https://github.com/liao2000/Operating-Systems-NCHU/blob/main/Notes/CH4-5.md)
+    + [CH4 Thread and concurrency](https://github.com/liao2000/Operating-Systems-NCHU/blob/main/Notes/Chapter%204%20Threads%20and%20concurrency%20.md)
+    + [CH5 CPU scheduling](https://github.com/liao2000/Operating-Systems-NCHU/blob/main/Notes/Chapter%205%20CPU%20scheduling.md)
     + [CH6 Process synchronization](https://github.com/liao2000/Operating-Systems-NCHU/blob/main/Notes/Chapter%206%20Process%20synchronization.md)
     + [CH7 Synchronization examples](https://github.com/liao2000/Operating-Systems-NCHU/blob/main/Notes/Chapter%207%20Synchronization%20examples.md)
     + [CH8 Deadlock](https://github.com/liao2000/Operating-Systems-NCHU/blob/main/Notes/Chapter%208%20Deadlock.md)
-    + [CH9 Memory management](https://github.com/liao2000/Operating-Systems-NCHU/blob/main/Notes/Chapter%209%20Memory%20management.md)
+    + [CH9 Main memory](https://github.com/liao2000/Operating-Systems-NCHU/blob/main/Notes/Chapter%209%20Main%20memory.md)
     + [CH11 Mass storage](https://github.com/liao2000/Operating-Systems-NCHU/blob/main/Notes/Chapter%2011%20Mass%20storage.md)
     + [CH12 IO systems](https://github.com/liao2000/Operating-Systems-NCHU/blob/main/Notes/Chapter%2012%20IO%20systems.md)
     + [CH13 File system interface](https://github.com/liao2000/Operating-Systems-NCHU/blob/main/Notes/Chapter%2013%20File%20system%20interface.md)
