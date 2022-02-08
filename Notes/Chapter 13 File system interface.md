@@ -1,4 +1,6 @@
-# Chapter 13
+# CH13 File system interface
+
+[toc]
 
 OS abstracts from the physical storage devices to define a logical storage unit: File
 
@@ -35,7 +37,7 @@ However, in a multi-user OS, **several processes** may open the same file at the
 
 ### File locking :lock:
 
-How to prevent other processes from gaining access to a file?
+File locks provide functionally similar to reader-writer lock. A shared lock is akin to reader lock. A exclusive lock is akin to a writer lock. Furthermore, operating systems may provide either mandatory or advisory file-locking mechanisms.
 
 1. **Advisory(諮詢) locking** (不檢查, UNIX systems)
    OS will prevent another process to access a shared file if this process does not acquire lock first
@@ -46,7 +48,7 @@ How to prevent other processes from gaining access to a file?
 
 ### File type
 
-Except executable files (*.com* or *.exe*), file types are only recognizes by user applications, not by OS. OS recognizes executable files to know how to load and run programs.  
+Except executable files (*.com* or *.exe*), file types are only recognizes by user applications, not by OS. OS recognizes executable files to know how to load and run programs.
 
 ### File structure
 
@@ -58,7 +60,7 @@ File types can also indicate the file structure. For example, txt - ASCII charac
 + direct access: based on disk model of a file. A file is made up of fixed length logical blocks
   + Model1: include the block number as a parameter. read *n* or write *n*
   + Model2: position to *n*, read next or write next
-  + n= relative block number
+  + n = relative block number
 + other access methods
 
 ## Directory structure
@@ -81,17 +83,16 @@ File types can also indicate the file structure. For example, txt - ASCII charac
 
 ## Protection
 
-File owner/creator should be able to control what operations can be done on this file by whom
+File owner/creator should be able to control what operations can be done on this file by whom.
 
 ### Access control
 
-Idea: make access dependent on the identity of the user. That is to say, different users may need different types of access to a file or directory
+Idea: make access dependent on the identity of the user. That is to say, different users may need different types of access to a file or directory.
 
 **Solution: ACL (Access control list)**
 
 A list of (user names/ids, allowed access types) associated with each file and directory.
 
-Pros: enabling complex access methodologies
-
-Cons: ACL may be very long
++ Pros: enabling complex access methodologies
++ Cons: ACL may be very long. This problems can be resolved by use of a condensed version of the access list. To condense the length of the access-control list, many systems recognize three classifications of users in connection with each file: owner, group, other.
 

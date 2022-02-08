@@ -1,6 +1,8 @@
-# Chapter 10: virtual memory
+# CH10 virtual memory
 
 [TOC]
+
+## Background
 
 **Motivation** :bulb:
 
@@ -15,33 +17,30 @@ Solution: virtual memory.
 1. Program no longer constrained by sized of physical memory
 2. Less memory is needed and more processes in memory
 3. Less I/O needed and faster response
+3. Virtual memory allows files and memory to be shared by two or more processes through page sharing.
 
-## Implement
+## Demand paging :page_with_curl:
 
-### Demand paging :page_with_curl:
+### Basic concepts
 
 Bring a page from disk into memory only when it is needed.
 
-1. **Swapper:** manipulate entire processes (搬整個程式，比如說把整本OS課本搬到書桌上), seldom used today.
-2. **Pager (or Lazy Swapper):** manipulate the individual pages of a process.
+1. **Swapper:** manipulate entire processes, seldom used today. (搬整個程式，比如說把整本 OS 課本帶去教室)
+2. **Pager (or Lazy Swapper):** manipulate the individual pages of a process. (搬會需要用到的程式，比如把 OS 課本拆成幾章帶到教室上課)
 
 ![](./src/10-1.png)
-
-*Where to put the pages that are paged out?* :man_shrugging:
-
-Put them to a partition on the secondary memory
 
 ### Free-frame list
 
 Free-frame list is used upon a page faults, or upon a stack or heap expand.
 
-Free-frame lists are zero-fill-on-demand. 當OS要 allocate 記憶體時會先將需要的部分都清為零，再從硬碟載入，避免記憶體的殘值被其他program知道
+Free-frame lists are zero-fill-on-demand. 當OS要 allocate 記憶體時會先將需要的部分都清為零，再從硬碟載入，避免記憶體的殘值被其他 program 知道
 
 ### Hardware support for demand paging
 
-How do we know if a page is in memory or not? **Valid-Invalid bit need hardware support**. 
+How do we know if a page is in memory or in secondary storage? **Valid-Invalid bit need hardware support**.
 
-During address translation by MMU, if valid-invalid bit is 0 → CPU signals page-fault trap to OS.
+During address translation by MMU, if valid-invalid bit is 0, then CPU signals **page-fault** trap to OS.
 
 為什麼要以硬體實作：因為這是 MMU 要看的，且 Page table 的格式由硬體去設計
 
@@ -56,11 +55,9 @@ During address translation by MMU, if valid-invalid bit is 0 → CPU signals pag
 5. OS 重設 page table 的 valid-invalid bit
 6. CPU 取得資料
 
-## Performance
+### Performance on Demand Paging
 
-Demand paging can significantly affect the performance of a computer system.
-
-實際上 page fault rate 非常小，因為程式具有 Locality，所以不太影響效能
+Demand paging can significantly affect the performance of a computer system. 實際上 page fault rate 非常小，因為程式具有 Locality，所以不太影響效能
 
 **Locality**
 
@@ -87,6 +84,8 @@ How to implement copy-on-write? use copy-on-write bit in page table. copy-on-wri
 3. MMU 發送 trap 給 OS (請求OS做Copy)
 4. OS 將該資料再複製一分
 
+Several version of UNIX provide a variation of `fork()` system call, `vfork()` (for virtual fork), that operates differently from `fork()` with copy-on-write. With `vfork()`, the parent process is suspended, and the child process uses the address space of the parent. Because `vfork()` does not use copy-on-write, if the child process changes any pages of the parent's address, the altered pages will be visible to the parent once it resumes.
+
 ## Page replacement
 
 How to do if physical memory is full?
@@ -100,19 +99,26 @@ How to do if physical memory is full?
 
 Page-replacement algorithm (要選哪一個剔掉最好？)
 
-### FIFO page replacement
+### 1. FIFO page replacement (First in First Out)
 
-缺點：有可能記憶體越大 Page fault 次數反而上升。稱為 *Belady's anomaly*
+缺點：有可能記憶體越大 Page fault 次數反而上升。稱為 *Bélády's anomaly* (貝拉迪異常)
 
-### Optimal algorithm
+Bélády's anomaly: for some page-replacement algorithms, the page-fault rate may increase as the number of allocated frames increases.
+
+### 2. Optimal algorithm
 
 如果能預見未來，在 page replacement 時優先犧牲近期不會用到的 frame，但是這個方法很難實作，畢竟這需要預見未來
 
-### LRU algorithm
+### 3. LRU algorithm (Least Recently  Used)
 
-Least Recently Used algorithm, Replace the page that *has not been used for the longest period of time*
+If the optimal algorithm is not feasible, perhaps an approximation of the optimal algorithm is possible. The key distinction between the FIFO and OPT algorithms is that
 
-LRU 會優先犧牲離自己當下最久沒被用到的 frame，是以 **時間** 來做判斷，而且 LRU 沒有 Belady's anomaly 的問題
++ FIFO algorithm uses the time when a page was brought into memory
++ OPT algorithm uses the time when a page is to be used.
+
+LRU replace the page that *has not been used for the longest period of time*
+
+LRU 會優先犧牲離自己當下最久沒被用到的 frame，是以 **時間** 來做判斷，而且 LRU 沒有 Bélády's anomaly 的問題
 
 **implement by counter (time-to-use field)**
 
@@ -128,9 +134,13 @@ LRU 會優先犧牲離自己當下最久沒被用到的 frame，是以 **時間*
 
 較久之前使用的放底部，最近使用的放頂部，如此一來，在 replacement 發生時不需要做 linear search。
 
-### LRU-approximation algorithm
+Because entries must be removed from the middle of the stack, it is best to implement this approach by using a doubly linked list with a head pointer and a tail pointer. This approach is particularly appropriate for software or microcode implementations of LRU replacement.
 
-LRU 需要充足的硬體資源，很少有系統能達到，幸運的事大多數的系統有提供 reference bit，可以透過使用 reference bit 達到 LRU 效果
+### 4. LRU-approximation algorithm
+
+LRU 需要充足的硬體資源，很少有系統能達到，幸運的是，大多數的系統有提供 reference bit，可以透過使用 reference bit 達到 LRU 效果
+
+The reference bit for a page is set by the hardware whenever that page is referenced (either a read or a write to any byte in the page). Reference bits re associated with each entry in the page table. Initially, **all bits are cleared to 0 by OS**. As a process executed, the bit associated with each page referenced is set (to 1) by the hardware. After some time, **we can determine which pages have been used and which have not been used by examining the reference bits**, although we do not know the order of use.
 
 #### Additional-reference-bits algorithm
 
@@ -194,22 +204,31 @@ reference: [https://gateoverflow.in/1018/gate-cse-2004-question-21-isro2007-44](
 
 The **maximum** number of frames per process is defined by the amount of available physical memory.
 
-**allocation algorithm**
+### Allocation algorithm
 
 How to allocate the free memory among the various processes?
 
-+ equal allocation: if 100 frames and 5 processes, give each 20 frames
-+ proportional allocation: depends on size, or depends on both size and priority
++ equal allocation: if 100 frames and 5 processes, give each 20 frames. (If a process do not need 20 frames, then we waste frames!)
++ proportional allocation: depends on size, or depends on both size and priority. 
 
-**Global v.s. Local allocation**
+### Global v.s. Local allocation
 
-+ Global replacement: selects a replacement frame from the set of **all frames**
++ Global replacement: selects a replacement frame from the set of **all frames**.
   + One process can take a frame from another
   + A process cannot control its own page fault rate
+  + This approach allow a high-priority processes to increase its from allocation at the expense of a lower-priority process.
+  + Problem: global replacement algorithm is that the set of pages in memory for a process depends not only on the paging behavior of that process, but also on the paging behavior of other processes. (會受其他 process 影響)
+  + Global replacement is more common than local replacement.
 + Local replacement: each process selects a replacement frame from its **own frames**
   + Bad: seldom used frames of the other processes cannot be used by the process
 
-Global replacement is more common (效能較好)
+> When free memory drops below a threshold, a kernel routine is triggered that begins reclaiming pages from all processes in the system. Such kernel routines are often known as reapers(收割者).
+
+### Non-Uniform Memory Access
+
+On NUMA systems with multiple CPUs, that is not the case. One these systems, a given CPU can access some sections of main memory faster than it can access others. These performance differences are caused by how CPUs and memory are interconnected in the system.
+
+To take NUMA into account, the scheduler must track the last CPU on which each process ran. If the scheduler tries to schedule each process onto its previous CPU, and the virtual memory system tries to allocate frames for the process close to the CPU on which it is being scheduled, then improved cache hits and decreased memory access times will result.
 
 ## Thrashing
 
@@ -243,9 +262,7 @@ reference:
 
 在行動裝置上用的比較頻繁，因為行動裝置用的快閃記憶體不能一直寫
 
-Reduce memory usage without resorting to page out pages.
-
-In a virtual memory compression system, pages to be paged out of virtual memory are compressed and stored in RAM
+Reduce memory usage without resorting to page out pages. In a virtual memory compression system, pages to be paged out of virtual memory are compressed and stored in RAM.
 
 ## Allocation Kernel Memory
 
@@ -267,11 +284,9 @@ Treated differently from user program allocating memory
 
 Two strategies for managing free memory that is assigned to **kernel** processes: *buddy system* and *slab allocation*
 
-### Managing free memory for kernel processes
+### Buddy system
 
-#### Buddy system
-
-Allocate memory from a fixed-size(power-of-2) segment which is consist of physically-contiguous pages.
+Allocate memory from a fixed-size (power-of-2) segment which is consist of physically-contiguous pages.
 
 Adjacent buddies can be combined to a larger segments.
 
@@ -283,11 +298,11 @@ cons: internal fragmentation
 
 reference: [Operating System | Buddy System – Memory allocation technique](https://tutorialspoint.dev/computer-science/operating-systems/operating-system-buddy-system-memory-allocation-technique#:~:text=The%20buddy%20system%20is%20a,size%20of%20S%20is%20required.&text=Else%3A%20Recursively%20divide%20the%20block,and%20get%20out%20the%20loop.)
 
-#### Slab allocation
+### Slab allocation
 
 Compared to earlier mechanisms, it **reduces fragmentation caused by allocations and deallocations**. The technique is used to retain allocated memory that contains a data object of a certain type for reuse upon subsequent allocations of objects of the same type.
 
-**slab**
+**Slab**
 
 + One or more contiguous pages
 + Assigned to one particular cache
@@ -302,7 +317,7 @@ OS 預先從實體記憶體切一塊給 slab，再把 slab 組成 cache，kernel
 
 **Example**
 
-If a process control block (PCB) = 2KB, a cache consists of 12KB slab can store 6PCB
+If a process control block (PCB) = 2KB, a cache consists of 12KB slab can store 6 PCBs
 
 **Benefits**
 
@@ -328,7 +343,9 @@ To reduce the large number of page faults that occurs at process startup, prepag
 
 How do we select a page size?
 
-### I/O Interlock
+Smaller: better resolution, allowing us to isolate only the memory that is actually needed. But it could result in high page fault rate.
+
+Bigger: Spend more time to read or write a page.
 
 ### TLB search
 

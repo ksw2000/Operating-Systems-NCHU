@@ -297,8 +297,8 @@ Typically, PCS is done according to priority─the scheduler selects the runnabl
   
   + 目前比較主流的實作方法 (Standard approach, adopted by Windows, Linux, Mac OS)
   + 每個處理器自己決定自己的排程 (2種實作法)
-    + All threads may be in a common ready queue
-    + Each processor may has its own private ready queue (主流)
+    + All threads may be in a **common ready queue**
+    + Each processor may has its own **private ready queue** (主流)
 
 ![](https://i.imgur.com/uwUpxnd.png)
 
@@ -322,6 +322,8 @@ To remedy this situation, many recent hardware designs have implemented multithr
 + Fine-grained: switches between threads at a much finer level of granularity -- typically at the boundary of an instruction. The architectural design of fine-grained systems includes **logic for thread switching**. i.e., the **cost of switching between threads is small**.
 
 ### Load Balancing :balance_scale:
+
+Only necessary on private ready queue systems
 
 2 approaches
 
@@ -357,4 +359,51 @@ Windows 10 supports HMP scheduling by allowing a thread to select a scheduling p
 
 ## Real-Time CPU Scheduling
 
-// TODO
+參考：[https://ithelp.ithome.com.tw/articles/10204690](https://ithelp.ithome.com.tw/articles/10204690)
+
+1. Soft real-time systems
+
+   provide no guarantee as to when a critical real-time process 
+
+2. Hard real-time systems
+
+   have stricter requirements. A task must be serviced by its deadline; service after the deadline has expired is the same as no service at all.
+
+### Minimizing Latency
+
+1. Interrupt latency
+
+   > Interrupt latency refers to the period of time **from the arrival of an interrupt at the CPU to the start of the routing** that services the interrupt. It must then save the state of the current process before servicing the interrupt using the specific interrupt service routing (ISR). The total time required to perform these tasks is the interrupt latency.
+
+2. Dispatch latency
+
+   > The amount of time required for the scheduling dispatcher to stop one process and start another is know as dispatch latency.
+
+### Priority-Based Scheduling
+
+The most important feature of a real-time OS is to respond immediately to a real-time process as soon as that process requires the CPU.
+
++ periodic
++ rate
+
+Before we proceed with the details of the individual schedulers, however, we must define certain characteristics of the processes that are to be scheduled. First, the processes are considered **periodic**. That is, they required the CPU at constant intervals. Once a periodic process has acquired the CPU, it has a fixed processing time *t*, a deadline *d* by which it must be serviced by the CPU, and period *p*.
+$$
+0\leq t\leq d\leq p
+$$
+The **rate** of a periodic task is $1/p$
+
+### Rate-Monotonic Scheduling
+
+The rate-monotonic scheduling algorithm schedules periodic tasks using a **static priority policy** with preemption. If a lower-priority process is running and a higher-priority process becomes available to run, it will preempt the lower-priority process. Upon entering the system, each periodic task is **assigned a priority inversely based on its period**. (執行越久者優先序越低)
+
+### Earliest-Deadline-First Scheduling
+
+Earliest-deadline-first (EDF) scheduling assigns priorities **dynamically according to deadline**.  The earlier the deadline, the higher the priority; the later the deadline, the lower the priority.
+
+### Proportional Share Scheduling
+
+Proportional share schedulers operate by allocating *T* shares among all applications. An application can receive *N* shares of time, thus ensuring that the application will have *N/T* of the total processor time.
+
+e.g. T = 100. There are 3 process *A*, *B*, *C*. *A* is assigned 50 shares, *B* is assigned 15 shares, and *C* is assigned 20 shares. This scheme ensures that *A* will have 50 percent of total processor time, *B* will have 15 percent, and *C* will have 20 percent.
+
+Proportional share schedulers must work in conjunction with an admission-control policy to guarantee that an application receives its allocated shares of time. An admission-control policy will admit a client requesting a particular number of shares only if sufficient shares are availabe.

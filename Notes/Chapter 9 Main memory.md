@@ -1,4 +1,4 @@
-# Chapter 9: Main Memory
+# CH9 Main Memory
 
 ## Background
 

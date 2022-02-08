@@ -7,22 +7,16 @@
 ## File system structure
 
 1. Application programs
-
 2. logical file system **aka virtual file system**
-
-   因為有不同的 file system 指另不同，virtual file system 會轉換 read() → ntfs_read()
-
-3. file-organization module **aka File system** 
-
-   file→ logical block number. e.g. Ext3, Ext4, NTFS, ...
-
+   + 因為有不同的 file system (Ext4, NTFS) 指令不同，virtual file system 會轉換 read() → ntfs_read()
+3. file-organization module **aka File system** e.g. Ext3, Ext4, NTFS, ...
+   + File system converts files to logical block numbers. 
 4. basic file system **aka block I/O subsystem**
-
-   Scheduler
-
+   + Manages the memory **buffers** and **caches** 
+   + Perform **I/O** **request scheduling**
+   + Send requests to the appropriate **device** **driver**
 5. I/O control (device driver + interrupt handlers)
-   Logical Block Number → Physical Block Number
-
+   + Logical Block Number → Physical Block Number
 6. devices
 
 **File system (file→ logical block number)**
@@ -179,6 +173,14 @@ Directory 主要是由檔名與 inode 對應的 entry 所組成
 
 ### Contiguous allocation
 
+Contiguous allocation requires that each file occupy a set of contiguous blocks on the device. Device addresses define a linear ordering on the device/ Contiguous allocation of a file is difined by the address of the first block and length of the file. If the file is *n* blocks long and starts at location *b*, then it occupies blocks *b*, *b+1*, ..., *b+n-1*.
+
+Contigious allocation has some problems, however. One difficulty is finding space for a new file. The system chosen to manage free space determines how this task is accomplished.
+
+Besides, when the file is created, the total amount of space it will need must be found and allocated. To minimize these drawbacks, an opearting system can use a modified contiguous-allocation scheme. Here, a contiguous chunk of space is allocated initially. Then, if that amount proves not to be large enough, another chunk of contiguous space, known as an extend, is addes.
+
+Contiguous allocation is easy to implement but has limitations, and is therefore not used in modern file systems.
+
  將檔案的 data block 分配成連續的 block
 
 | file | start | length |
@@ -213,7 +215,11 @@ Cons:
 
 ### Linked allocation
 
-inode 指向一個 blook，這個 block 的結尾會指定下一個 block，依此類推
+Linked allocation solved all problems of contiguos allocation. The blocks may me scatteded anywhere on the device. Each block contains a pointer to the next blcok.
+
+The major problem is that is can be used effectively only for sequential-access files. To find the *i*th block of a file, we must start at the beginning of that file and follow the pointers until we get to the *i*th block. In addition, becuase we need to sotre the pointer, we require slightly more space.
+
+The usual solution to this problem is to collect blocks into multiples, called **clusters**, and to allocate clusters rather than blocks.
 
 Pros:
 
@@ -273,7 +279,7 @@ Cons: significant number of disk head seeks (但是 FAT 不大，可以在記憶
 
 ### Indexed Allocation
 
-vsfs 透過 inode 將 indexes 存起來
+vsfs 透過每個檔案的 index block 將 indexes 存起來
 
 | the # of block | 0    | 1    | 2    | 3    |
 | -------------- | ---- | ---- | ---- | ---- |
@@ -294,8 +300,12 @@ Cons:
 **Mechanism for handling the index block**
 
 1. **Linked scheme**: link together several index blocks (index block 保留第一個值接到下一個 index block, 類似 linked list)
+
 2. **Multilevel Index**: 一個 Index table 再指向另一個 index table 形成 hierarchical 的樣子
+
 3. **Combined scheme:** Direct blocks + indirect blocks + double indirect blocks + triple indirect blocks...
+
+   Used in UNIX-based file systems, is to keep the first, 15 pointers of the index block in the file's inode. The first 12 of these pointers point to direct blocks. The next 3 pointers point to indirect blocks. The first points to a single indirect block. The second points to a double indirect blocks. The last pointer contains the address of a triple indirect block.
 
 ### Unix Combined Scheme
 
@@ -315,11 +325,11 @@ Unix 假設大部分都是小檔案，前面採用 direct index，效能好，�
 
 ### Bit vector
 
-就是先前 vsfs 講的 bitmap 做法，第 i 個 bit 代表第 i 個 block
+就是先前 vsfs 講的 bitmap 做法，第 i 個 bit 代表第 i 個 block，這個作法的缺點是需要有軟體的幫助，要把 bit vector 放進記憶體中，會消耗記憶體資源。
 
 ### Linked list
 
-記錄 free block 的起頭，再把 free block 串成一個 linked list，不會像 bit vector 一樣浪費額外的空間
+記錄 free block 的起頭，再把 free block 串成一個 linked list，不會像 bit vector 一樣浪費額外的空間 (因為指標是記在 free block). The FAT method incorporates free-block accounting into the allocation data structure. No separate method is needed.
 
 **Pros**：節省空間
 
@@ -341,7 +351,7 @@ Unix 假設大部分都是小檔案，前面採用 direct index，效能好，�
 
 ### Counting
 
-會記錄相鄰連續 block (起始, 個數)
+會記錄相鄰連續 block (起始, 個數), These entries can be stored in a balanced tree, rather than a linked list, for efficient lookup, insertion, and deletion.
 
 (2, 4) - (8, 6) - (17, 2) - (25, 3)
 
@@ -365,7 +375,9 @@ Unix 假設大部分都是小檔案，前面採用 direct index，效能好，�
 
 ### Double caching problem
 
-Data may be cached in both **buffer cache** and **page cache**
+Data may be cached in both **buffer cache** and **page cache**. 
+
+↓ I/O without a unified buffer cache.
 
 ```mermaid
 graph TD

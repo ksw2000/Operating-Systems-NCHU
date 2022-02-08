@@ -13,7 +13,7 @@
 + A platter is divided into tracks
 + A track is further subdivided into **sectors** which are the smallest unit of transfer. (sector 為硬碟存取最小單位，目前主流為 512 bytes \~ 4KB)
 
-<img src="D:\GoogleDrive\109學年度(下)\File Processing and IO Systems\src\HDD.png" alt="image-20210318093542733" style="zoom: 80%;" />
+<img src="src/HDD.png" alt="image-20210318093542733" style="zoom: 80%;" />
 
 **I/O Time**
 
@@ -141,7 +141,7 @@ SCAN algorithm sometimes called the elevator algorithm
 
 但是這個排程方法有個問題，假設 request 是 uniform 分布的，當電梯從 15 樓往 1 樓下降時，電梯抵達 1 樓時，15 樓累積的乘客人最多，而且電梯從 1 樓再前往 15 樓時又得等更久；換句話說，中間的樓層最容易被服務，而最高層和最低層最難被服務
 
-### CSCAN Scheduling
+### C-SCAN Scheduling
 
 Circular SCAN (C-SCAN), CSCAN Scheduling 改善 SCAN Scheduling
 
@@ -153,7 +153,7 @@ In older system, OS did all the scheduling. In the past, HDD interfaces required
 
 在現代的架構中，OS 只負責做 Block number 的排序，排程的部分則由 HDD 或 SSD 自己管理
 
-### Disk-Scheduling Algorithm is OS
+### Disk-Scheduling Algorithm in OS
 
 Linux includes following scheduling algorithms
 
@@ -254,11 +254,7 @@ The controller maintains a list of bad blocks on the disk
 + replace each bad sector with one of the spare(備用) sectors
 + spare sector are not visible to OS
 
-block 毀損時，自動導向到備份的 block, 而這個備份的 block 會盡量在毀損的付近
-
-Example // TODO
-
-NVM devices also have bad pages at manufacturing time or go bad over time
+block 毀損時，自動導向到備份的 block, 而這個備份的 block 會盡量在毀損的付近. NVM devices also have bad pages at manufacturing time or go bad over time
 
 ## Swap-space management
 
@@ -331,7 +327,7 @@ Goal
 + improve *reliability* via redundancy
 + improve *performance* via parallelism
 
-### redundancy
+### Redundancy
 
 + Mirroring: 把資料同時寫在兩顆硬碟中
 + Parity bits: even parity or odd parity
@@ -370,7 +366,7 @@ Drive mirroring
 
 #### RAID Level 4
 
-Saving space with parity
+Saving space with parity. Aka memory-style error-correcting-code (ECC) organization
 
 | Disk0 | Disk1 | Disk2 | Disk3 | Disk4 |
 | ----- | ----- | ----- | ----- | ----- |
@@ -378,9 +374,11 @@ Saving space with parity
 | 4     | 5     | 6     | 7     | P4-7  |
 | 8     | 9     | 10    | 11    | P8-11 |
 
-When we want to write Block 4 and Block 9 simultaneously, P4-7 and P8-11 in disk4 need to be written. We can use RAID Level 5
+When we want to write Block 4 and Block 9 simultaneously, P4-7 and P8-11 in disk4 need to be written. We can use RAID Level 5  (block-interleaved distributed parity)
 
 #### RAID Level 5
+
+Aka block-interleaved distributed parity, differs from level 4 in that it spreads data and parity among all N+1 drives, rather than storing data in N drives and parity in one drive. A parity block cannot store parity for blocks in the same drive because a drive failure sould result in loss of data as well as of parity.
 
 | Disk0 | Disk1 | Disk2 | Disk3 | Disk4 |
 | ----- | ----- | ----- | ----- | ----- |
@@ -390,11 +388,17 @@ When we want to write Block 4 and Block 9 simultaneously, P4-7 and P8-11 in disk
 
 #### RAID Level 6
 
+Aka (P+Q redundancy scheme)
+
 | Disk0 | Disk1 | Disk2 | Disk3 | Disk4 |
 | ----- | ----- | ----- | ----- | ----- |
 | 0     | 1     | 2     | P0-2  | P'0-2 |
 | 3     | 4     | P3-5  | P'3-5 | 5     |
 | 6     | P6-8  | P'6-8 | 7     | 8     |
+
+#### Multidimensional Raid Level 6
+
+Some sophisticated storage arrays amplify RAID level 6. Consider an array containing hundreds of drives. Putting those drives in a RAID level 6 stripe would result in many data drives and only two logical parity drives. Multidimensional RAID level 6 logically **arranges drives into rows and columns** and implements RAID level 6 both horizontally along the rows and vertically down the columns. The system can recover from any failure vertically down ─ or, indeed, multiple failures ─ by using parity blocks in any of these locations.
 
 #### Computing parity
 

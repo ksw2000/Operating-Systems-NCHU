@@ -1,6 +1,12 @@
-# Deadlock :skull: :lock:
+# CH8 Deadlock :skull: :lock:
 
 [TOC]
+
+In a multiprogramming environment, several threads may compete for a finite number of resources. A thread requests resources; if the resources are not available at that time, the thread enters a waiting state. Sometimes, a waiting thread can never again change state, because the resources it has requested are held by other waiting threads. This situation is called a deadlock.
+
+The various synchronization tools such as `mutex lock`, `semaphores` are also system resources, and on contemporary computer system, they are the most common sources of deadlock.
+
+A thread must request a resource before using it and must release the resource after using it. Obviously, the number of resources requested may not exceed the total number of resources available in the system.
 
 **Example**
 
@@ -36,6 +42,50 @@ Problem with handling deadlocks
 2. Since it only occur under certain scheduling results
 
    > 當執行緒 1 執行互斥鎖 1 而恰好跳到執行緒 2 時，執行緒 2 執行互斥鎖 2 ，因為互斥鎖 1 已被執行緒 1 鎖住了，所以跳回執行緒 1 ，當執行緒 1 想要執行互斥鎖 2 時，又因為已被執行緒 2 鎖住，所以回到執行緒 2 , ...
+
+## Livelock
+
+Livelock is another form of liveness failure. It is similar to deadlock; both prevent 2 or more threads from proceeding, but the threads are unable to proceed for different reasons. Whereas daedlock occurs when every thread in a set is blocked waiting for an event that can be caused only by another thread in the set, **livelock occurs when a thread continuously attempts an action that fails**. 比方說與路人相向而行兩人同時向左或同時向右而無法前行
+
+`pthread_mutex_trylock` attempts to acquire lock without blocking. Livelock typically occurs when threads retry failing operations at the same time. It thus can generally be avoided by having each thread retry the failing operating at random time. Livelock is less common than deadlock but nonetheless is a challenging issue in designing concurrent applications.
+
+**Example of livelock**
+
+```c
+void* work_one(void* params){
+    int done = 0;
+  	while(!done){
+        pthread_mutex_lock(&first_mutex);
+        if(pthread_mutex_trylock(&second_mutex)){
+            // TODO
+            pthread_mutex_unlock(&second_mutex);
+            pthread_mutex_unlock(&first_mutex);
+            done = 1;
+        }else{
+            pthread_mutex_unlock(&first_mutex);
+        }
+    }
+    pthred_exit(0);
+}
+```
+
+```c
+void* work_two(void* params){
+    int done = 0;
+    while(!done){
+        pthread_mutex_lock(&second_mutex);
+        if(pthread_mutex_trylock(&first_mutex)){
+            // TODO
+            pthread_mutex_unlock(&first_mutex);
+            ptherad_mutex_unlock(&second_mutex);
+            done = 1;
+        }
+    }
+    pthread_exit(0);
+}
+```
+
+
 
 ## Characterization
 

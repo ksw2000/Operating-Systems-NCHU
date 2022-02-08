@@ -1,4 +1,4 @@
-# I/O Systems
+# CH12 I/O Systems
 
 ## I/O Hardware
 
@@ -6,6 +6,7 @@
 
 + PCIe (Peripheral Component Interconnect Express): Common PC System bus
 + I/O bus: connects relative slow devices such as the keyboard, serial port, and USB ports
++ daisy chain: When device A has a cable that plugs into device B, and device B has a cable that plugs into device C, and device C plugs into a port on the computer, this arrangement is called a daisy chain.
 
 ### Controller
 
@@ -222,9 +223,9 @@ High performance event timer (高精準度計時器)
 ### blocking and nonblocking I/O
 
 + blocking: process suspended until I/O completed
-+ nonblocking: I/O call returns immediately with as much as data available
++ nonblocking: I/O call returns immediately with as much as data available.
 
-+ asynchronous: return immediately, without waiting for the I/O to complete
++ asynchronous: return immediately, and perform in its entirety but will complete at some future time.
 
 ## Kernel I/O Subsystem
 
@@ -267,7 +268,7 @@ why we need a buffer?
 Some devices, such as printers, cannot accept interleaved data streams from multiple concurrent applications
 
 + sol.1 spooling
-  **s**imultaneous **p**eripheral **o**peration **o**n-**l**ine 讓本來不能多工處理的裝置也能並行處理(方法是先把要印的東西寫進 memory 會 disk 中)
+  **s**imultaneous **p**eripheral **o**peration **o**n-**l**ine 讓本來不能多工處理的裝置也能並行處理(方法是先把要印的東西寫進 memory or disk 中)
 
 + sol.2 device reservation
 
@@ -286,6 +287,6 @@ Kernel I/O subsystem must return an error number when I/O request fails. System 
 ## Transforming I/O Request to Hardware Operations
 
 1. A process issues a blocking read() system call
-   + If the data are available in page cache, the data are returned to the process, and the I/O request is completed
+   + If the data are available in page cache, the data are returned to the process, and the I/O request is completed.
    + Otherwise, a physical I/O must be performed, the process if removed from the run queue and is placed on the wait queue. I/O subsystem sends the request to the device drive.
 
