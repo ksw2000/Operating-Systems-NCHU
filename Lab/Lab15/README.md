@@ -10,3 +10,5 @@
 
 + Use the exercise1’s code to create another library, the library is created as shared library.
 + Compare two executable(.out) files size, using the command `ls -l` and `size` to show the file information.
+
+See more: [lab15.pdf](./lab15.pdf)
