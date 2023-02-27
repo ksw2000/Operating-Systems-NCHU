@@ -45,7 +45,7 @@ Problem with handling deadlocks
 
 ## Livelock
 
-Livelock is another form of liveness failure. It is similar to deadlock; both prevent 2 or more threads from proceeding, but the threads are unable to proceed for different reasons. Whereas daedlock occurs when every thread in a set is blocked waiting for an event that can be caused only by another thread in the set, **livelock occurs when a thread continuously attempts an action that fails**. 比方說與路人相向而行兩人同時向左或同時向右而無法前行
+Livelock is another form of liveness failure. It is similar to deadlock; both prevent 2 or more threads from proceeding, but the threads are unable to proceed for different reasons. Whereas deadlock occurs when every thread in a set is blocked waiting for an event that can be caused only by another thread in the set, **livelock occurs when a thread continuously attempts an action that fails**. 比方說與路人相向而行兩人同時向左或同時向右而無法前行
 
 `pthread_mutex_trylock` attempts to acquire lock without blocking. Livelock typically occurs when threads retry failing operations at the same time. It thus can generally be avoided by having each thread retry the failing operating at random time. Livelock is less common than deadlock but nonetheless is a challenging issue in designing concurrent applications.
 
@@ -85,16 +85,14 @@ void* work_two(void* params){
 }
 ```
 
-
-
 ## Characterization
 
 Deadlock can arise if 4 conditions hold *simultaneously*
 
-1. **mutual exclusion (Mutex)**: Only one thread at a time can use a resource
-2. **hold and wait**: a thread holding at least one resource is waiting to acquire additional resources held by other threads
-3. **no preemption**: a resource can be released only voluntarily by the thread holding it. A 無法搶走 B 的資源，除非 B 主動放棄
-4. **circular wait**: there exists a set {p<sub>0</sub>, p<sub>1</sub>, ..., p<sub>n</sub>} of waiting threads s.t. p<sub>n</sub> is waiting for resource that is held by p<sub>n-1</sub> and p<sub>n</sub> is waiting for resource that held by p<sub>0</sub>
+1. **Mutual exclusion (Mutex)**: Only one thread at a time can use a resource
+2. **Hold and wait**: a thread holding at least one resource is waiting to acquire additional resources held by other threads
+3. **No preemption**: a resource can be released only voluntarily by the thread holding it. A 無法搶走 B 的資源，除非 B 主動放棄
+4. **Circular wait**: there exists a set {p<sub>0</sub>, p<sub>1</sub>, ..., p<sub>n</sub>} of waiting threads s.t. p<sub>n</sub> is waiting for resource that is held by p<sub>n-1</sub> and p<sub>n</sub> is waiting for resource that held by p<sub>0</sub>
 
 ## Methods for Handling Deadlocks
 
@@ -125,7 +123,7 @@ A set methods for ensuring at least **one of the four conditions cannot hold**
 >
 > 3. No preemption: 當某執行緒 A 已經擁有一些資源時，不可再請求其他資源
 >
->    → Method1: 讓所有 A 擁有的資源都可以被搶奪
+>    → Method1: 讓 A 擁有的所有資源都可以被搶奪
 >
 >    → Method2: Check the requested resource for following case
 >
@@ -183,7 +181,7 @@ Each thread must a priori claim maximum use. (在使用前就先宣告). When a 
 ```
 (1) Let Work and Finish be vectors of length ‘m’ and ‘n’ respectively.
 	Initialize: Work = Available
-	Finish[i] = false; for i=1, 2, 3, 4….n
+	Finish[i] = false; for i=1, 2, 3, 4,…,n
 
 (2) Find an i such that both
 	(a) Finish[i] = false
@@ -198,13 +196,13 @@ Each thread must a priori claim maximum use. (在使用前就先宣告). When a 
 	then the system is in a safe state
 ```
 
-|      | Allocation<br />A B C | Need<br />A B C | Max<br />A B C | Available<br />A B C |
-| ---- | --------------------- | --------------- | -------------- | -------------------- |
-| P0   | 0 1 0                 | 7 4 3           | 7 5 3          | 2 3 0                |
-| P1   | 3 0 2                 | 0 2 0           | 3 2 2          |                      |
-| P2   | 3 0 1                 | 6 0 0           | 9 0 1          |                      |
-| P3   | 2 1 1                 | 0 1 1           | 2 2 2          |                      |
-| P4   | 0 0 2                 | 4 3 1           | 4 3 3          |                      |
+|      | Allocation<br />A B C (已被分配的) | Need<br />A B C (還需要=MAX-allocation) | Max<br />A B C (預先向OS要的) | Available<br />A B C (OS現在有的) |
+| ---- | ---------------------------------- | --------------------------------------- | ----------------------------- | --------------------------------- |
+| P0   | 0 1 0                              | 7 4 3                                   | 7 5 3                         | 2 3 0                             |
+| P1   | 3 0 2                              | 0 2 0                                   | 3 2 2                         |                                   |
+| P2   | 3 0 1                              | 6 0 0                                   | 9 0 1                         |                                   |
+| P3   | 2 1 1                              | 0 1 1                                   | 2 2 2                         |                                   |
+| P4   | 0 0 2                              | 4 3 1                                   | 4 3 3                         |                                   |
 
 ```
 計算 Need 公式：Max - allocation
